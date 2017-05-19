@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private Location last_location;
 
+    private boolean moveFirstTime = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,8 +127,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged: " + location);
         last_location = location;
-//        googleMap.animateCamera(CameraUpdateFactory
-//                .newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+        if (moveFirstTime)
+            moveLastLocation();
+            moveFirstTime = false;
     }
 
     @Override
