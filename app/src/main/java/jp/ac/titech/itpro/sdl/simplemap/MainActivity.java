@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements
             Manifest.permission.ACCESS_FINE_LOCATION
     };
     private final static int REQCODE_PERMISSIONS = 1111;
+
+    private Location last_location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +124,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged: " + location);
-        googleMap.animateCamera(CameraUpdateFactory
-                .newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+        last_location = location;
+//        googleMap.animateCamera(CameraUpdateFactory
+//                .newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
     }
 
     @Override
@@ -157,5 +161,15 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "stopLocationUpdate");
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         state = UpdatingState.STOPPED;
+    }
+
+    public void moveCurrentPosition(View v) {
+        moveLastLocation();
+    }
+
+    private void moveLastLocation() {
+        if (last_location != null)
+            googleMap.animateCamera(CameraUpdateFactory
+                    .newLatLng(new LatLng(last_location.getLatitude(), last_location.getLongitude())));
     }
 }
